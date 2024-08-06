@@ -1,45 +1,97 @@
 let counter = 1;
 let scores = {
-    かんまち: {},
-    かねます: {},
-    えちごや: {},
-    ひろや: {},
-    さがさ: {},
+    player1: {
+        name: "player1",
+    },
+    player2: {
+        name: "player2",
+    },
+    player3: {
+        name: "player3",
+    },
 }
 const keys = Object.keys(scores);
 
 window.onload = function () {
-    const table = document.getElementById('table');
-    const lastRow = table.rows[table.rows.length - 1];
-    const initailScores = JSON.parse(localStorage.getItem('scores5'));
-    if (initailScores) {
-        scores = initailScores;
-        for (let subKey in initailScores["かんまち"]) {
-            const tr = document.createElement('tr');
-            for (let i = 0; i < 6; i++) {
-                const td = document.createElement('td');
-                if (i !== 0) {
-                    td.innerHTML = `<div>${initailScores[keys[i - 1]][subKey].calcScore}</div><div>(${initailScores[keys[i - 1]][subKey].score})</div>`;
-                } else {
-                    if (subKey !== 'chip') {  
-                        td.innerHTML = `${subKey}半荘目 <button onclick="deleteRow(this)">削除</button>`;
-                        tr.id = `row${subKey}`;
-                        counter = parseInt(subKey) + 1;
-                    } else {
-                        td.innerHTML = `チップ <button onclick="deleteRow(this)">削除</button>`;
-                        tr.id = "chipTr";
-                    }
-                }
-                tr.appendChild(td);
-            }
-            lastRow.parentNode.insertBefore(tr, lastRow);
-        }
-    }
-    updateScore();
+    const popup = document.getElementById("init");
+    popup.showModal();
+    const backdrop = document.createElement('div');
+    backdrop.classList.add('modal-backdrop');
+    document.body.appendChild(backdrop);
 };
 
+function prevGame() {
+    const initailScores = JSON.parse(localStorage.getItem('scores3'));
+    if (!initailScores) {
+        alert("前回のゲームデータがありません");
+        return;
+    }
+    const popup = document.getElementById("init");
+    popup.close();
+    const backdrop = document.querySelector('.modal-backdrop');
+    if (backdrop) {
+        backdrop.parentNode.removeChild(backdrop);
+    }
+    const table = document.getElementById('table');
+    const lastRow = table.rows[table.rows.length - 1];
+    scores = initailScores;
+    for (let i = 1; i <= keys.length; i++) {
+        const playerName = scores[`player${i}`].name;
+        const elems = document.getElementsByClassName(`p${i}`);
+        for (let i = 0; i < elems.length; i++) {
+            elems[i].firstChild.textContent = playerName;
+        }
+    }
+    for (let subKey in initailScores[keys[0]]) {
+        const tr = document.createElement('tr');
+        for (let i = 0; i <= keys.length; i++) {
+            if (subKey === 'name') {
+                continue;
+            }
+            const td = document.createElement('td');
+            if (i !== 0) {
+                td.innerHTML = `<div>${initailScores[keys[i - 1]][subKey].calcScore}</div><div>(${initailScores[keys[i - 1]][subKey].score})</div>`;
+            } else {
+                if (subKey !== 'chip') {
+                    td.innerHTML = `${subKey}半荘目 <button onclick="deleteRow(this)">削除</button>`;
+                    tr.id = `row${subKey}`;
+                    counter = parseInt(subKey) + 1;
+                } else {
+                    td.innerHTML = `チップ <button onclick="deleteRow(this)">削除</button>`;
+                    tr.id = "chipTr";
+                }
+            }
+            tr.appendChild(td);
+        }
+        lastRow.parentNode.insertBefore(tr, lastRow);
+    }
+    updateScore();
+}
+
+function closePopup() {
+    const popup = document.getElementById("init");
+    popup.close();
+    const backdrop = document.querySelector('.modal-backdrop');
+    if (backdrop) {
+        backdrop.parentNode.removeChild(backdrop);
+    }
+    localStorage.clear();
+    for (let i = 1; i <= keys.length; i++) {
+        const playerName = document.getElementById(`player${i}`).value;
+        if (playerName !== "") {
+            const elems = document.getElementsByClassName(`p${i}`);
+            scores[`player${i}`].name = playerName;
+            for (let i = 0; i < elems.length; i++) {
+                elems[i].firstChild.textContent = playerName;
+            }
+        }
+    }
+
+    memory();
+}
+
 function addChip() {
-    for (let i = 1; i < 6; i++) {
+    for (let i = 1; i <= keys.length; i++) {
         if (!document.getElementById(`chip${i}`).value) {
             alert("チップを全員分入力してください");
             return;
@@ -58,7 +110,7 @@ function addChip() {
     const tr = document.createElement('tr');
     tr.id = "chipTr";
 
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i <= keys.length; i++) {
         const td = document.createElement('td');
         if (document.getElementById(`score${i}`)) {
             const chipNum = parseInt(document.getElementById(`chip${i}`).value)
@@ -79,18 +131,11 @@ function addChip() {
 }
 
 function addScore() {
-    let exclusion;
-    for (let i = 1; i < 6; i++) {
+    for (let i = 1; i <= keys.length; i++) {
         if (!document.getElementById(`score${i}`).value) {
             alert("スコアを全員分入力してください");
             return;
-        } else if (document.getElementById(`score${i}`).value == -1) {
-            exclusion = i;
         }
-    }
-    if (exclusion === undefined) {
-        alert("不参加者を選択してください");
-        return;
     }
     const umaSelectElement = document.querySelector('#uma');
     const umaType = umaSelectElement.options[umaSelectElement.selectedIndex].value;
@@ -100,23 +145,19 @@ function addScore() {
     const tr = document.createElement('tr');
     tr.id = `row${counter}`;
     let score = [];
-    for (let i = 1; i < 6; i++) {
-        if (i == exclusion) score.push(-1000000);
-        else score.push(parseInt(document.getElementById(`score${i}`).value));
+    for (let i = 1; i <= keys.length; i++) {
+        score.push(parseInt(document.getElementById(`score${i}`).value));
     }
-    let calcScore = [0, 0, 0, 0, 0];
+    let calcScore = [0, 0, 0];
     let temp = [...score];
     const firstMaxIndex = temp.indexOf(Math.max(...temp));
     temp[firstMaxIndex] = -1000000;
     const secondMaxIndex = temp.indexOf(Math.max(...temp));
     temp[secondMaxIndex] = -1000000;
     const thirdMaxIndex = temp.indexOf(Math.max(...temp));
-    temp[thirdMaxIndex] = -1000000;
-    const fourthMaxIndex = temp.indexOf(Math.max(...temp));
-    calcScore[fourthMaxIndex] = Math.round((score[fourthMaxIndex] - uma2) / 1000) - 30;
-    calcScore[thirdMaxIndex] = Math.round((score[thirdMaxIndex] - uma1) / 1000) - 30;
-    calcScore[secondMaxIndex] = Math.round((score[secondMaxIndex] + uma1) / 1000) - 30;
-    calcScore[firstMaxIndex] = -calcScore[fourthMaxIndex] - calcScore[thirdMaxIndex] - calcScore[secondMaxIndex];
+    calcScore[thirdMaxIndex] = Math.round((score[thirdMaxIndex] - uma2) / 1000) - 40;
+    calcScore[secondMaxIndex] = Math.round((score[secondMaxIndex] - uma1) / 1000) - 40;
+    calcScore[firstMaxIndex] = -calcScore[thirdMaxIndex] - calcScore[secondMaxIndex];
     scores[keys[firstMaxIndex]][counter] = {
         score: score[firstMaxIndex],
         calcScore: calcScore[firstMaxIndex],
@@ -129,24 +170,10 @@ function addScore() {
         score: score[thirdMaxIndex],
         calcScore: calcScore[thirdMaxIndex],
     }
-    scores[keys[fourthMaxIndex]][counter] = {
-        score: score[fourthMaxIndex],
-        calcScore: calcScore[fourthMaxIndex],
-    }
-    scores[keys[exclusion - 1]][counter] = {
-        score: "欠",
-        calcScore: 0,
-    }
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i <= keys.length; i++) {
         const td = document.createElement('td');
         if (document.getElementById(`score${i}`)) {
-            if (i == exclusion) {
-                td.innerHTML = `<div>0</div><div>(欠)</div>`;
-                calcScore.shift();
-                score.shift();
-            } else {
-                td.innerHTML = `<div>${calcScore.shift()}</div><div>(${score.shift()})</div>`;
-            }
+            td.innerHTML = `<div>${calcScore.shift()}</div><div>(${score.shift()})</div>`;
         } else {
             td.innerHTML = `${counter}半荘目 <button onclick="deleteRow(this)">削除</button>`;
             counter++;
@@ -155,24 +182,19 @@ function addScore() {
     }
     lastRow.parentNode.insertBefore(tr, lastRow);
     updateScore();
-    for (let i = 1; i < 6; i++) {
+    for (let i = 1; i <= keys.length; i++) {
         document.getElementById(`score${i}`).value = null;
     }
 }
 
 function deleteRow(button) {
-    const title = button.parentNode.textContent;
-    const conform = confirm(`${title}を削除しますか？`);
-    if (!conform) {
-        return;
-    }
     const tr = button.parentNode.parentNode;
     function extractNumber(str) {
         let match = str.match(/\d+/);
         return match ? Number(match[0]) : "chip";
     }
     const dict = extractNumber(tr.id);
-    for (let i = 1; i < 6; i++) {
+    for (let i = 1; i <= keys.length; i++) {
         const key = keys[i - 1];
         delete scores[key][dict];
     }
@@ -183,13 +205,19 @@ function deleteRow(button) {
 function updateScore() {
     const table = document.getElementById('table');
     const sumRow = table.rows[table.rows.length - 1];
-    for (let i = 1; i < 6; i++) {
+    for (let i = 1; i <= keys.length; i++) {
         let total = 0;
         for (let key in scores[keys[i - 1]]) {
-            total += parseInt(scores[keys[i - 1]][key].calcScore);
+            if (scores[keys[i - 1]][key].calcScore) {
+                total += parseInt(scores[keys[i - 1]][key].calcScore);
+            }
         }
         sumRow.children[i].textContent = total;
     }
+    memory();
+}
+
+function memory() {
     const jsonScores = JSON.stringify(scores);
-    localStorage.setItem('scores5', jsonScores);
+    localStorage.setItem('scores3', jsonScores);
 }

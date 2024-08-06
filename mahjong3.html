@@ -4,22 +4,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>麻雀記録（チュニジアン同好会用）</title>
+    <title>麻雀記録（3人用）</title>
     <link rel="stylesheet" href="mahjong.css" type="text/css">
 </head>
 
 <body>
-    <h2>麻雀記録（チュニジアン同好会用）</h2>
+    <h2>場代自動計算ツール（3麻）</h2>
+    <dialog id="init" class="init">
+        <button onclick="prevGame()">前回のゲームを継続</button>
+        <h2>プレイヤー名を入力</h2>
+        <input type="text" id="player1" name="player1" placeholder="Player 1"><br><br>
+        <input type="text" id="player2" name="player2" placeholder="Player 2"><br><br>
+        <input type="text" id="player3" name="player3" placeholder="Player 3"><br><br>
+        <button onclick="closePopup()">決定</button>
+    </dialog>
+
     <div class="area">
         <label for="result">- 点数表 -</label>
         <table id="table" border="1">
             <tr>
                 <th>半荘</th>
-                <th class="p1">かんまち</th>
-                <th class="p2">かねます</th>
-                <th class="p3">えちごや</th>
-                <th class="p4">ひろや</th>
-                <th class="p5">さがさ</th>
+                <th class="p1">Player 1</th>
+                <th class="p2">Player 2</th>
+                <th class="p3">Player 3</th>
             </tr>
             <tr>
                 <td>合計</td>
@@ -30,12 +37,6 @@
                     <div>0</div>
                 </td>
                 <td id="total3">
-                    <div>0</div>
-                </td>
-                <td id="total4">
-                    <div>0</div>
-                </td>
-                <td id="total5">
                     <div>0</div>
                 </td>
             </tr>
@@ -51,43 +52,33 @@
                 <option value="10-20">10-20（ワンツー）</option>
                 <option value="10-30">10-30（ワンスリー）</option>
                 <option value="20-30">20-30（ツースリー）</option>
+                <option value="0-5">0-5（2位なし）</option>
+                <option value="0-10">0-10（2位なし）</option>
+                <option value="0-20">0-20（2位なし）</option>
+                <option value="0-30">0-30（2位なし）</option>
                 <option value="0-0">なし</option>
             </select><br><br>
         </p>
         <p class="p1">
-            かんまち
+            Player 1
             <span>
                 :
             </span>
             <input type="number" id="score1" placeholder="持ち点を入力"><br>
         </p>
         <p class="p2">
-            かねます
+            Player 2
             <span>
                 :
             </span>
             <input type="number" id="score2" placeholder="持ち点を入力"><br>
         </p>
         <p class="p3">
-            えちごや
+            Player 3
             <span>
                 :
             </span>
             <input type="number" id="score3" placeholder="持ち点を入力"><br>
-        </p>
-        <p class="p4">
-            ひろや
-            <span>
-                :
-            </span>
-            <input type="number" id="score4" placeholder="持ち点を入力"><br>
-        </p>
-        <p class="p5">
-            さがさ
-            <span>
-                :
-            </span>
-            <input type="number" id="score5" placeholder="持ち点を入力"><br>
         </p>
         <button onclick="addScore()">追加する</button>
     </div>
@@ -105,49 +96,33 @@
             </select><br>
         </p>
         <p class="p1">
-            かんまち
+            Player 1
             <span>
                 :
             </span>
             <input type="number" id="chip1" placeholder="チップ増減を入力"><br>
         </p>
         <p class="p2">
-            かねます
+            Player 2
             <span>
                 :
             </span>
             <input type="number" id="chip2" placeholder="チップ増減を入力"><br>
         </p>
         <p class="p3">
-            えちごや
+            Player 3
             <span>
                 :
             </span>
             <input type="number" id="chip3" placeholder="チップ増減を入力"><br>
         </p>
-        <p class="p4">
-            ひろや
-            <span>
-                :
-            </span>
-            <input type="number" id="chip4" placeholder="チップ増減を入力"><br>
-        </p>
-        <p class="p5">
-            さがさ
-            <span>
-                :
-            </span>
-            <input type="number" id="chip5" placeholder="チップ増減を入力"><br>
-        </p>
         <button onclick="addChip()">追加する</button>
     </div>
     <br>
-    
-    <script src="mahjong5.js"></script>
+
+    <script src="mahjong3.js"></script>
 </body>
 
 <footer>
     <p>&copy; kota kanmachi</p>
 </footer>
-
-</html>
