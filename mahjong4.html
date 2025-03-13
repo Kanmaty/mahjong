@@ -93,6 +93,79 @@
     <br>
 
     <div class="area">
+        <label for="result">- 精算 -</label><br>
+        <p>
+            レートを選択：
+            <select id="rate">
+                <option value="10">テンイチ（1000点-10町）</option>
+                <option value="20">テンニ（1000点-20町）</option>
+                <option value="30">テンサン（1000点-30町）</option>
+                <option value="50">テンゴ（1000点-50町）</option>
+                <option value="100">テンピン（1000点-100町）</option>
+            </select><br>
+        </p>
+        <p>
+            チップレートを選択：
+            <select id="chip-rate">
+                <option value="10">1枚-10町</option>
+                <option value="20">1枚-20町</option>
+                <option value="30">1枚-30町</option>
+                <option value="50">1枚-50町</option>
+                <option value="100">1枚-100町（テンゴ）</option>
+                <option value="200">1枚-200町</option>
+            </select><br>
+        </p>
+        <p class="p1">
+            Player 1
+            <span>
+                :
+            </span>
+            <input type="number" id="chip-rate1" placeholder="チップ増減を入力"><br>
+        </p>
+        <p class="p2">
+            Player 2
+            <span>
+                :
+            </span>
+            <input type="number" id="chip-rate2" placeholder="チップ増減を入力"><br>
+        </p>
+        <p class="p3">
+            Player 3
+            <span>
+                :
+            </span>
+            <input type="number" id="chip-rate3" placeholder="チップ増減を入力"><br>
+        </p>
+        <p class="p4">
+            Player 4
+            <span>
+                :
+            </span>
+            <input type="number" id="chip-rate4" placeholder="チップ増減を入力"><br>
+        </p>
+        <button onclick="payoff()">精算する</button>
+        <table id="payoff-table" border="1">
+            <tr>
+                <th class="p1">Player 1</th>
+                <th class="p2">Player 2</th>
+                <th class="p3">Player 3</th>
+                <th class="p4">Player 4</th>
+            </tr>
+            <tr>
+                <td id="payoff1">
+                </td>
+                <td id="payoff2">
+                </td>
+                <td id="payoff3">
+                </td>
+                <td id="payoff4">
+                </td>
+            </tr>
+        </table>
+    </div>
+    <br>
+
+    <div class="area">
         <label for="result">- チップ計算 -</label><br>
         <p>
             チップレートを選択：

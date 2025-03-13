@@ -133,6 +133,27 @@ function addChip() {
     updateScore();
 }
 
+function payoff() {
+    for (let i = 1; i <= keys.length; i++) {
+        if (!document.getElementById(`chip-rate${i}`).value) {
+            alert("チップを全員分入力してください");
+            return;
+        }
+    }
+    const rateSelectElement = document.querySelector('#rate');
+    const rate = parseInt(rateSelectElement.options[rateSelectElement.selectedIndex].value);
+
+    const chipSelectElement = document.querySelector('#chip-rate');
+    const chip = parseInt(chipSelectElement.options[chipSelectElement.selectedIndex].value);
+
+    const scores = getScore();
+    for (let i = 1; i <= keys.length; i++) {
+        const chipNum = parseInt(document.getElementById(`chip-rate${i}`).value);
+        const payoff = scores[i - 1] * rate + chipNum * chip;
+        document.getElementById(`payoff${i}`).textContent = payoff + "町";
+    }
+}
+
 function addScore() {
     for (let i = 1; i <= keys.length; i++) {
         if (!document.getElementById(`score${i}`).value) {
@@ -225,6 +246,20 @@ function updateScore() {
         sumRow.children[i].textContent = total;
     }
     memory();
+}
+
+function getScore() {
+    const returnScores = [];
+    for (let i = 1; i <= keys.length; i++) {
+        let total = 0;
+        for (let key in scores[keys[i - 1]]) {
+            if (scores[keys[i - 1]][key].calcScore) {
+                total += parseInt(scores[keys[i - 1]][key].calcScore);
+            }
+        }
+        returnScores.push(total);
+    }
+    return returnScores;
 }
 
 function memory() {
